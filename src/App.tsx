@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, useNavigate, Link } from 'react-router-dom';
-import { AuthProvider } from './context/AuthContext';
+import { AuthProvider, useAuth } from './context/AuthContext';
+import { Loader2 } from 'lucide-react';
 import Layout from './components/Layout';
 import Home from './pages/Home';
 import Courses from './pages/Courses';
@@ -24,14 +25,27 @@ import EnrollmentSuccess from './pages/EnrollmentSuccess';
 import { Login, Register, Verify } from './pages/Auth';
 import { DatabaseSeeder } from './components/DatabaseSeeder';
 
+const AuthLoader = ({ children }: { children: React.ReactNode }) => {
+  const { loading } = useAuth();
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="animate-spin h-8 w-8 text-emerald-600" />
+      </div>
+    );
+  }
+  return <>{children}</>;
+};
+
 export default function App() {
   const basename = import.meta.env.VITE_GITHUB_PAGES === 'true' ? '/omets' : '';
   return (
     <AuthProvider>
       <DatabaseSeeder />
       <BrowserRouter basename={basename}>
-        <Routes>
-          <Route path="/" element={<Layout />}>
+        <AuthLoader>
+          <Routes>
+            <Route path="/" element={<Layout />}>
             <Route index element={<Home />} />
             <Route path="about" element={<About />} />
             <Route path="services" element={<Services />} />
@@ -56,6 +70,7 @@ export default function App() {
             <Route path="enrollment-success" element={<EnrollmentSuccess />} />
           </Route>
         </Routes>
+        </AuthLoader>
       </BrowserRouter>
     </AuthProvider>
   );

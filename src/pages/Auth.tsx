@@ -8,8 +8,14 @@ export const Login = () => {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const { signInWithEmail, signInWithGoogle } = useAuth();
+  const { signInWithEmail, signInWithGoogle, user } = useAuth();
   const navigate = useNavigate();
+
+  React.useEffect(() => {
+    if (user) {
+      navigate('/dashboard');
+    }
+  }, [user, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -17,7 +23,6 @@ export const Login = () => {
     setError('');
     try {
       await signInWithEmail(email, password);
-      navigate('/dashboard');
     } catch (err: any) {
       setError(err.message || 'Failed to sign in');
     } finally {
@@ -104,8 +109,18 @@ export const Register = () => {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const { registerWithEmail } = useAuth();
+  const { registerWithEmail, user } = useAuth();
   const navigate = useNavigate();
+
+  React.useEffect(() => {
+    if (user) {
+      if (!user.verified) {
+        navigate('/verify');
+      } else {
+        navigate('/dashboard');
+      }
+    }
+  }, [user, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -116,7 +131,6 @@ export const Register = () => {
     setError('');
     try {
       await registerWithEmail(formData.email, formData.password, formData.firstName, formData.lastName);
-      navigate('/verify');
     } catch (err: any) {
       setError(err.message || 'Failed to register');
     } finally {

@@ -28,14 +28,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           const userDoc = await getDoc(doc(db, 'users', firebaseUser.uid));
           if (userDoc.exists()) {
             setUser(userDoc.data() as User);
-          } else {
+          } else if (firebaseUser.providerData[0]?.providerId === 'google.com') {
             const newUser: User = {
               uid: firebaseUser.uid,
               email: firebaseUser.email,
               displayName: firebaseUser.displayName,
               photoURL: firebaseUser.photoURL,
               role: firebaseUser.email === 'officialsmaj@gmail.com' ? 'admin' : 'user',
-              verified: firebaseUser.providerData[0]?.providerId === 'google.com', // Google users are pre-verified
+              verified: true, // Google users are pre-verified
               omtBalance: 100, // Welcome bonus
             };
             await setDoc(doc(db, 'users', firebaseUser.uid), newUser);
@@ -88,20 +88,26 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     // Send verification email via backend
     try {
-      await fetch('/api/auth/send-verification', {
+      const res = await fetch('/api/auth/send-verification', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, code }),
       });
+      if (!res.ok) throw new Error('Backend unavailable');
     } catch (error) {
       console.error('Failed to send verification email:', error);
+      alert(`Backend unavailable (GitHub Pages mode). Your verification code is: ${code}`);
     }
 
     setUser(newUser);
   };
 
   const signInWithEmail = async (email: string, pass: string) => {
-    await signInWithEmailAndPassword(auth, email, pass);
+    const userCredential = await signInWithEmailAndPassword(auth, email, pass);
+    const userDoc = await getDoc(doc(db, 'users', userCredential.user.uid));
+    if (userDoc.exists()) {
+      setUser(userDoc.data() as User);
+    }
   };
 
   const verifyCode = async (code: string): Promise<boolean> => {
