@@ -3,31 +3,26 @@ import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 import { getAnalytics, isSupported } from 'firebase/analytics';
 
+import { initializeApp } from 'firebase/app';
+import { getAuth } from 'firebase/auth';
+import { getFirestore } from 'firebase/firestore';
+import { getAnalytics } from 'firebase/analytics';
+
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-  appId: import.meta.env.VITE_FIREBASE_APP_ID,
-  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
+  apiKey: "AIzaSyC_b2Pi-CvwfXLZFz0tGTx1UoHUajB1kPU",
+  authDomain: "omets-25229.firebaseapp.com",
+  projectId: "omets-25229",
+  storageBucket: "omets-25229.firebasestorage.app",
+  messagingSenderId: "784710492843",
+  appId: "1:784710492843:web:6e677d46f8a7ba3c7dcdee",
+  measurementId: "G-JVSYG9LH9E"
 };
 
-// Initialize Firebase SDK
+// Initialize Firebase
 const app = initializeApp(firebaseConfig);
-
-// Initialize Analytics safely - keep it simple and non-breaking
-export const db = getFirestore(app);
 export const auth = getAuth(app);
+export const db = getFirestore(app);
+export const analytics = typeof window !== 'undefined' ? getAnalytics(app) : null;
 
-// Check for analytics support and initialize if possible
-let analyticsInstance: any = null;
-if (typeof window !== 'undefined') {
-  isSupported().then(yes => {
-    if (yes) analyticsInstance = getAnalytics(app);
-  }).catch(err => console.warn('Firebase Analytics not supported:', err));
-}
-
-export const analytics = analyticsInstance;
 export default app;
