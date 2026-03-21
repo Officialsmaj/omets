@@ -23,6 +23,7 @@ import TermsOfService from './pages/TermsOfService';
 import FAQ from './pages/FAQ';
 import EnrollmentSuccess from './pages/EnrollmentSuccess';
 import { Login, Register, Verify } from './pages/Auth';
+import ProfileSettings from './pages/ProfileSettings';
 import { DatabaseSeeder } from './components/DatabaseSeeder';
 
 const AuthLoader = ({ children }: { children: React.ReactNode }) => {
@@ -64,6 +65,7 @@ export default function App() {
             <Route path="register" element={<Register />} />
             <Route path="verify" element={<Verify />} />
             <Route path="dashboard" element={<Dashboard />} />
+            <Route path="profile-settings" element={<ProfileSettings />} />
             <Route path="help" element={<HelpCenter />} />
             <Route path="privacy" element={<PrivacyPolicy />} />
             <Route path="terms" element={<TermsOfService />} />

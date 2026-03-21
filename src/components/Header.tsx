@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate, NavLink } from 'react-router-dom';
-import { Menu, X, Search, Bell, User, LogIn, LogOut, ChevronDown, BookOpen } from 'lucide-react';
+import { Menu, X, Search, Bell, User, LogIn, LogOut, ChevronDown, BookOpen, Settings } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
@@ -185,6 +185,13 @@ export default function Header() {
                     className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-emerald-600 transition-colors"
                   >
                     <User className="h-4 w-4" /> Dashboard
+                  </Link>
+                  <Link 
+                    to="/profile-settings" 
+                    onClick={() => setIsProfileOpen(false)}
+                    className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium text-slate-600 hover:bg-slate-50 hover:text-emerald-600 transition-colors"
+                  >
+                    <Settings className="h-4 w-4" /> Profile Settings
                   </Link>
                   <Link 
                     to="/courses" 

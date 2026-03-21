@@ -4,6 +4,12 @@ import { User, BookOpen, Calendar, MessageSquare, Bell, Settings, LogOut, Chevro
 import { Link, useNavigate } from 'react-router-dom';
 import { collection, query, where, onSnapshot, getDocs, doc } from 'firebase/firestore';
 import { db } from '../firebase';
+import { clsx, type ClassValue } from 'clsx';
+import { twMerge } from 'tailwind-merge';
+
+function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
 
 interface Enrollment {
   id: string;
@@ -173,9 +179,9 @@ export default function Dashboard() {
             <button className="flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-bold text-slate-600 hover:bg-slate-50 transition-colors">
               <Bell className="h-5 w-5" /> Notifications
             </button>
-            <button className="flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-bold text-slate-600 hover:bg-slate-50 transition-colors">
+            <Link to="/profile-settings" className="flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-bold text-slate-600 hover:bg-slate-50 transition-colors">
               <Settings className="h-5 w-5" /> Settings
-            </button>
+            </Link>
             <button
               onClick={() => {
                 signOut();
@@ -209,6 +215,30 @@ export default function Dashboard() {
                 </div>
               </div>
             ))}
+          </div>
+
+          {/* Recent Activity */}
+          <div className="flex flex-col gap-6">
+             <h3 className="text-2xl font-bold text-slate-900">Recent Activity</h3>
+             <div className="flex flex-col gap-4">
+                {[
+                  { id: 1, type: 'enrollment', title: 'Enrolled in Advanced Mechanical Design', date: '2 hours ago', icon: BookOpen, color: 'text-emerald-600 bg-emerald-50' },
+                  { id: 2, type: 'token', title: 'Earned 50 OMT Tokens', date: '5 hours ago', icon: Wallet, color: 'text-amber-600 bg-amber-50' },
+                  { id: 3, type: 'booking', title: 'Scheduled Thermal Consultation', date: 'Yesterday', icon: Calendar, color: 'text-blue-600 bg-blue-50' },
+                  { id: 4, type: 'community', title: 'Commented on Modern Manufacturing', date: '2 days ago', icon: MessageSquare, color: 'text-purple-600 bg-purple-50' },
+                ].map((activity) => (
+                  <div key={activity.id} className="flex items-center gap-4 rounded-2xl border border-black/5 bg-white p-4 shadow-sm hover:shadow-md transition-all">
+                     <div className={cn("flex h-10 w-10 items-center justify-center rounded-xl", activity.color)}>
+                        <activity.icon className="h-5 w-5" />
+                     </div>
+                     <div className="flex flex-col flex-grow">
+                        <p className="text-sm font-bold text-slate-900">{activity.title}</p>
+                        <p className="text-xs text-slate-500">{activity.date}</p>
+                     </div>
+                     <ChevronRight className="h-4 w-4 text-slate-400" />
+                  </div>
+                ))}
+             </div>
           </div>
 
           {/* My Courses */}
